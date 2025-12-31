@@ -5,6 +5,12 @@ export const ROUTE_ACCESS_CONDITION = {
 } as const;
 
 export const ROUTES = {
+  root: {
+    index: {
+      path: "/",
+      type: ROUTE_ACCESS_CONDITION.authenticated,
+    },
+  },
   inventario: {
     index: {
       path: "/inventario",
@@ -72,4 +78,20 @@ export const ROUTES = {
       type: ROUTE_ACCESS_CONDITION.unauthenticated,
     },
   },
+  error403: {
+    index: {
+      path: "/403",
+      type: ROUTE_ACCESS_CONDITION.public,
+    },
+  },
+  error404: {
+    index: {
+      path: "/404",
+      type: ROUTE_ACCESS_CONDITION.public,
+    },
+  },
 };
+
+export const FLATENED_ROUTES = Object.values(ROUTES).flatMap((group) =>
+  Object.values(group),
+);

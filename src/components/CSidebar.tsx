@@ -4,35 +4,51 @@ import {
   SidebarItem,
   SidebarItemGroup,
   SidebarItems,
-  SidebarLogo,
 } from "flowbite-react";
-import { HiCalculator } from "react-icons/hi";
-import { FaFileInvoiceDollar, FaClipboardList } from "react-icons/fa";
+import { FaClipboardList, FaFileInvoiceDollar } from "react-icons/fa";
 import { GiBoxUnpacking } from "react-icons/gi";
+import { HiCalculator } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
-import useSidebarStore from "../stores/useSidebarStore";
+import { MdOutlinePointOfSale } from "react-icons/md";
+import { Link } from "react-router";
 import { ROUTES } from "../lib/constants/routes";
+import useSessionStore from "../stores/useSessionStore";
+import useSidebarStore from "../stores/useSidebarStore";
 import { RouterLink } from "./RouterLink";
+import { useState } from "react";
+import { ServiceAuth } from "../services/ServiceAuth";
 
 export function CSidebar() {
+  const { appUser } = useSessionStore();
   const { isMobileSidebarOpen, toggleMobileSidebar } = useSidebarStore();
+  const { clearSession } = useSessionStore();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const onSignOut = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    await ServiceAuth.signOut();
+    clearSession();
+    setIsLoggingOut(false);
+  };
   return (
     <Sidebar
       className={`[&>div]:h-screen fixed top-0 -translate-x-full transition-transform duration-500 md:translate-0 md:sticky md:float-left xl:w-80 ${isMobileSidebarOpen && "translate-x-0"}`}
       aria-label="Sidebar"
     >
-      <SidebarLogo
-        href="/"
-        img="/logo.jpeg"
-        imgAlt="Auto Repuestos Fernandez Logo"
+      <Link
+        to={ROUTES.root.index.path}
+        className="flex items-center gap-2 mb-6 ml-2 dark:text-white"
       >
-        Auto Repuestos
-      </SidebarLogo>
+        <MdOutlinePointOfSale size={24} />
+        <span className="text-xl font-semibold">
+          {appUser?.organizations?.name || "Organization Name"}
+        </span>
+      </Link>
       <SidebarItems>
         <SidebarItemGroup>
           <SidebarCollapse
             label="Inventario"
-            icon={() => FaClipboardList({ width: 20, height: 20 })}
+            icon={() => FaClipboardList({ size: 18 })}
             open
           >
             <SidebarItem
@@ -51,7 +67,7 @@ export function CSidebar() {
             </SidebarItem>
           </SidebarCollapse>
           <SidebarCollapse
-            icon={() => HiCalculator({ width: 20, height: 20 })}
+            icon={() => HiCalculator({ size: 20 })}
             label="Cotizaciones"
             open
           >
@@ -71,7 +87,7 @@ export function CSidebar() {
             </SidebarItem>
           </SidebarCollapse>
           <SidebarCollapse
-            icon={() => FaFileInvoiceDollar({ width: 20, height: 20 })}
+            icon={() => FaFileInvoiceDollar({ size: 18 })}
             label="Facturas"
             open
           >
@@ -91,7 +107,7 @@ export function CSidebar() {
             </SidebarItem>
           </SidebarCollapse>
           <SidebarCollapse
-            icon={() => GiBoxUnpacking({ width: 20, height: 20 })}
+            icon={() => GiBoxUnpacking({ size: 18 })}
             label="Ordenes de salida"
             open
           >
@@ -110,12 +126,14 @@ export function CSidebar() {
               Crear nuevo
             </SidebarItem>
           </SidebarCollapse>
-          <SidebarItem
-            icon={() => IoLogOut({ width: 20, height: 20 })}
-            onClick={() => {}}
+          <button
+            className="cursor-pointer flex items-center w-full gap-3 p-2 dark:hover:bg-gray-700 rounded-lg"
+            onClick={onSignOut}
+            disabled={isLoggingOut}
           >
+            <IoLogOut size={20} />
             Cerrar sesión
-          </SidebarItem>
+          </button>
         </SidebarItemGroup>
       </SidebarItems>
     </Sidebar>

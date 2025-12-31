@@ -14,13 +14,16 @@ import { FacturasEditPage } from "./pages/facturas/FacturasEditPage";
 import { OrdenesDeSalidaIndexPage } from "./pages/ordenes-de-salida/OrdenesDeSalidaIndexPage";
 import { OrdenesDeSalidaNewPage } from "./pages/ordenes-de-salida/OrdenesDeSalidaNewPage";
 import { OrdenesDeSalidaEditPage } from "./pages/ordenes-de-salida/OrdenesDeSalidaEditPage";
+import { Error404Page } from "./pages/Error404Page";
+import { Error403Page } from "./pages/Error403Page";
+import { RootPage } from "./pages/RootPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="" element={<Layout />}>
-          <Route path="/" element={<h1>Dashboard</h1>} />
+          <Route path={ROUTES.root.index.path} element={<RootPage />} />
           <Route
             path={ROUTES.iniciarSesion.index.path}
             element={<IniciarSesionPage />}
@@ -77,6 +80,8 @@ export default function App() {
             path={ROUTES.ordenesDeSalida.edit.path}
             element={<OrdenesDeSalidaEditPage />}
           />
+          <Route path={ROUTES.error403.index.path} element={<Error403Page />} />
+          <Route path={ROUTES.error404.index.path} element={<Error404Page />} />
         </Route>
       </Routes>
     </BrowserRouter>
